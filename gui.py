@@ -5,10 +5,11 @@ import viewScreenPyQt
 import screenShare
 import sys
 from os import system
+import threading
 
 class IntroWindow(QtGui.QMainWindow):
 
-	def __init__(self):
+	def __init__(self, ):
 		super(IntroWindow, self).__init__()
 		self.setGeometry(0, 0, 200, 200)
 		self.center()
@@ -51,13 +52,19 @@ class IntroWindow(QtGui.QMainWindow):
 
 	def handleStream(self):
 		self.close()
-		screenShare.run()
+		f = screenShare.run
+		t = threading.Thread(target = f,)
+		t.start()
+		t.join()
 
 	def handleViewer(self):
 		ip = self.ip.text()
 		self.close()
-		viewScreenPyQt.run(ip)
-
+		f = viewScreenPyQt.run
+		t = threading.Thread(target = f, args = (ip, ))
+		t.start()
+		t.join()
+		
 	def handleConnect(self):
 		uname = self.username.text()
 		passwd = self.password.text()

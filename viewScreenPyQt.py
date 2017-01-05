@@ -11,27 +11,31 @@ from os import getcwd
 #IP = '127.0.0.1'
 PORT = 8888
 
+s = socket.socket()
+
+app = QtGui.QApplication(argv)
+
+width = win32api.GetSystemMetrics(0)
+height = win32api.GetSystemMetrics(1)
+window = QtGui.QMainWindow()
+window.setGeometry(30, 30, width - 1, height - 1)
+pic = QtGui.QLabel(window)
+pic.setGeometry(0, 0, width - 1, height - 1)
+
 def run(IP):
-	s = socket.socket()
+	
 	s.connect( ( IP , PORT ) )
-
-	width = win32api.GetSystemMetrics(0)
-	height = win32api.GetSystemMetrics(1)
-
-	#app = QtGui.QApplication(argv)
-	window = QtGui.QMainWindow()
-	window.setGeometry(30, 30, width - 1, height - 1)
-
-	pic = QtGui.QLabel(window)
-	pic.setGeometry(0, 0, width - 1, height - 1)
-
 	window.show()
 
+	#while True:
+	#	foo(pic)
 	timer = QtCore.QTimer()
 	timer.timeout.connect(foo)
 	timer.start(0)
 
-	#exit(app.exec_())
+	s.close()
+	
+	exit(app.exec_())
 
 
 
@@ -62,3 +66,5 @@ def foo():
 	p.close()
 
 	pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
+
+run('127.0.0.1')

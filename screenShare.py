@@ -42,3 +42,5 @@ def run():
 			continue
 
 	con.close()
+
+run()
