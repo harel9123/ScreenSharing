@@ -36,9 +36,9 @@ while True:
 		ack = con.recv(2)
 		if ack != 'go':
 			break
-		print ack #For delay
+		#print ack #For delay
 		t = con.send( toSend )
-		print t, x
+		#print t, x
 	ack = con.recv(15)
 	#print ack
 	if ack[:2] == 'ok':
@@ -51,11 +51,11 @@ while True:
 		win32api.SetCursorPos( (x, y) )
 		continue
 
-	ack = con.recv(7)
+	'''ack = con.recv(7)
 	if ack == 'success':
 		#sleep(5)
 		continue
 	else:
-		break
+		break'''
 
 con.close()

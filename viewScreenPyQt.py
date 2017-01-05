@@ -11,7 +11,7 @@ from PyQt4 import QtCore
 import sys, os
 
 IP = '10.0.0.1'
-#IP = '127.0.0.1'
+IP = '127.0.0.1'
 PORT = 8888
 
 s = socket.socket()
@@ -41,14 +41,14 @@ def foo():
 		#print l
 		s.send('go')
 		temp = s.recv(l)
-		print len(temp), c
+		#print len(temp), c
 		data += temp
 		c += 1
 	try:
 		data = base64.b64decode(data)
 	except:
 		s.send('fail')
-		continue
+		return
 	finally:
 		coords = win32api.GetCursorPos()
 		s.send('ok' + str(coords))
@@ -58,7 +58,7 @@ def foo():
 
 	pic.setPixmap(QtGui.QPixmap(os.getcwd() + '/p.png'))
 	#counter += 1
-	s.send('success')
+	#s.send('success')
 
 #thread = Thread(target = foo)
 #thread.start()
