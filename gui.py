@@ -50,12 +50,12 @@ class IntroWindow(QtGui.QMainWindow):
 		self.streamBTN.move(50, 110)		
 
 	def handleStream(self):
-		#self.close()
+		self.close()
 		screenShare.run()
 
 	def handleViewer(self):
 		ip = self.ip.text()
-		#self.close()
+		self.close()
 		viewScreenPyQt.run(ip)
 
 	def handleConnect(self):
