@@ -43,10 +43,15 @@ def foo():
 		temp = s.recv(l)
 		print len(temp), c
 		data += temp
+		c += 1
+	try:
+		data = base64.b64decode(data)
+	except:
+		s.send('fail')
+		continue
+	finally:
 		coords = win32api.GetCursorPos()
 		s.send('ok' + str(coords))
-		c += 1
-	data = base64.b64decode(data)
 	p = open('p.png', 'wb')
 	p.write(data)
 	p.close()
