@@ -7,23 +7,33 @@ from PyQt4 import QtCore
 from sys import argv, exit
 from os import getcwd
 
-IP = '10.0.0.1'
-IP = '127.0.0.1'
+#IP = '10.0.0.1'
+#IP = '127.0.0.1'
 PORT = 8888
 
-s = socket.socket()
-s.connect( ( IP , PORT ) )
+def run(IP):
+	s = socket.socket()
+	s.connect( ( IP , PORT ) )
 
-app = QtGui.QApplication(argv)
-window = QtGui.QMainWindow()
-window.setGeometry(30, 30, 1920, 1080)
+	width = win32api.GetSystemMetrics(0)
+	height = win32api.GetSystemMetrics(1)
 
-counter = 0
+	#app = QtGui.QApplication(argv)
+	window = QtGui.QMainWindow()
+	window.setGeometry(30, 30, width - 1, height - 1)
 
-pic = QtGui.QLabel(window)
-pic.setGeometry(0, 0, 1920, 1080)
+	pic = QtGui.QLabel(window)
+	pic.setGeometry(0, 0, width - 1, height - 1)
 
-window.show()
+	window.show()
+
+	timer = QtCore.QTimer()
+	timer.timeout.connect(foo)
+	timer.start(0)
+
+	#exit(app.exec_())
+
+
 
 def foo():
 	data = ''
@@ -52,9 +62,3 @@ def foo():
 	p.close()
 
 	pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
-
-timer = QtCore.QTimer()
-timer.timeout.connect(foo)
-timer.start(0)
-
-exit(app.exec_())
