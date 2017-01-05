@@ -1,6 +1,5 @@
 from PIL import Image, ImageGrab
 import socket
-import struct
 from cStringIO import StringIO
 from time import sleep
 import base64
@@ -22,10 +21,11 @@ while True:
 	l = len(data)
 	sent = 0
 	max_size = 65535
-	approval = s.recv(2)
+	approval = con.recv(2)
 	if approval != "go":
 		continue
-	for x in range( ( l / max_size ) + 1 ):
+
+	'''for x in range( ( l / max_size ) + 1 ):
 		sent += max_size
 		toSend = data[ : max_size]
 		#print len(toSend), x
@@ -41,7 +41,10 @@ while True:
 			break
 		#print ack #For delay
 		t = con.send( toSend )
-		#print t, x
+		#print t, x'''
+	data = '(' + data + ')'
+	con.send(data)
+
 	ack = con.recv(15)
 	#print ack
 	if ack[:2] == 'ok':
@@ -53,12 +56,5 @@ while True:
 		y = int(ack[1])
 		win32api.SetCursorPos( ( x, y ) )
 		continue
-
-	'''ack = con.recv(7)
-	if ack == 'success':
-		#sleep(5)
-		continue
-	else:
-		break'''
 
 con.close()
