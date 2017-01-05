@@ -19,7 +19,7 @@ s.connect( ( IP , PORT ) )
 
 app = QtGui.QApplication(sys.argv)
 window = QtGui.QMainWindow()
-window.setGeometry(10, 10, 1920, 1080)
+window.setGeometry(30, 30, 1920, 1080)
 
 counter = 0
 
@@ -32,18 +32,16 @@ def foo():
 	max_size = 65535
 	data = ''
 	temp = 'a' * max_size
+	temp = ''
 	c = 0
-	while len(temp) == max_size or c == 0:
-		try:
-			l = int(s.recv(5))
-		except:
-			return
-		#print l
-		s.send('go')
-		temp = s.recv(l)
-		#print len(temp), c
-		data += temp
+	s.send('go')
+	while ')' is not in temp:
+		data += s.recv()
+		print len(data), c
+		#data += temp
 		c += 1
+	data = data[1:]
+	data = data[:len(data) - 1]
 	try:
 		data = base64.b64decode(data)
 	except:

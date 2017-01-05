@@ -22,6 +22,9 @@ while True:
 	l = len(data)
 	sent = 0
 	max_size = 65535
+	approval = s.recv(2)
+	if approval != "go":
+		continue
 	for x in range( ( l / max_size ) + 1 ):
 		sent += max_size
 		toSend = data[ : max_size]
@@ -48,7 +51,7 @@ while True:
 		ack[1] = ack[1].strip(')')
 		x = int(ack[0])
 		y = int(ack[1])
-		win32api.SetCursorPos( (x, y) )
+		win32api.SetCursorPos( ( x, y ) )
 		continue
 
 	'''ack = con.recv(7)
