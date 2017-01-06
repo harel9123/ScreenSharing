@@ -1,8 +1,8 @@
 from PyQt4 import QtGui, QtCore
 #import RCGui - The gui of the Remotecontrol menu
 #import netDevice
-import viewScreenPyQt
-import screenShare
+# import viewScreenPyQt
+# import screenShare
 import sys
 from os import system
 import threading
@@ -51,19 +51,21 @@ class IntroWindow(QtGui.QMainWindow):
 		self.streamBTN.move(50, 110)		
 
 	def handleStream(self):
-		self.close()
+		pass
+		'''self.close()
 		f = screenShare.run
 		t = threading.Thread(target = f,)
 		t.start()
-		t.join()
+		t.join()'''
 
 	def handleViewer(self):
-		ip = self.ip.text()
-		self.close()
-		f = viewScreenPyQt.run
-		t = threading.Thread(target = f, args = (ip, ))
-		t.start()
-		t.join()
+		# ip = self.ip.text()
+		# self.close()
+		# f = viewScreenPyQt.run
+		# t = threading.Thread(target = f, args = (ip, ))
+		# t.start()
+		# t.join()
+		pass
 		
 	def handleConnect(self):
 		uname = self.username.text()

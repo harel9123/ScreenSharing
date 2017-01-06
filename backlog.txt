@@ -1,0 +1,6 @@
+clicks
+keyboard
+File transfer
+gui
+voip
+audio
