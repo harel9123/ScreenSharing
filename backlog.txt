@@ -1,7 +1,14 @@
-clicks
-keyboard
-File transfer
-gui
-udp connection
-voip
-audio
+Events - High Priority:
+	[ - ] Click
+	[ - ] Keyboard
+	[ - ] Double Click
+	[ - ] Mouse Scroll
+
+Base Features - Medium Priority:
+	[ - ] GUI
+
+Misc - Low Priority:
+	[ - ] File transfer
+	[ - ] VoIP
+	[ - ] Audio
+	[ - ] UDP Connection
