@@ -2,5 +2,6 @@ clicks
 keyboard
 File transfer
 gui
+udp connection
 voip
 audio
