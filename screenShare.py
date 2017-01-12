@@ -24,24 +24,6 @@ while True:
 	approval = con.recv(2)
 	if approval != "go":
 		continue
-
-	'''for x in range( ( l / max_size ) + 1 ):
-		sent += max_size
-		toSend = data[ : max_size]
-		#print len(toSend), x
-		data = data[max_size : ]
-		l = len(toSend)
-		l = str(l)
-		#print l
-		if len(l) < 5:
-			l = '0' + l
-		con.send(l)
-		ack = con.recv(2)
-		if ack != 'go':
-			break
-		#print ack #For delay
-		t = con.send( toSend )
-		#print t, x'''
 	data = '(' + data + ')'
 	con.send(data)
 
@@ -54,7 +36,7 @@ while True:
 		ack[1] = ack[1].strip(')')
 		x = int(ack[0])
 		y = int(ack[1])
-		win32api.SetCursorPos( ( x, y ) )
+		#win32api.SetCursorPos( ( x, y ) )
 		continue
 
 con.close()

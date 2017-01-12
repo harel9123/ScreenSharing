@@ -8,6 +8,7 @@ from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
 import Queue
+import thread
 
 moved = False
 isClicked = (0, 0, 0)
@@ -17,28 +18,28 @@ MOUSE_UP = 2
 LEFT = 1
 RIGHT = 2
 
-# def OnMouseEvent(event):
-# 	global isClicked
-# 	global q
-#     print 'MessageName:', event.MessageName
-#     print 'Message:', event.Message
-#     if event.Message == "mouse left down":
-#     	isClicked = (MOUSE_DOWN, LEFT, event.Position)
-#     	q.put(isClicked)
-#     elif event.Message == "mouse left up":
-#     	isClicked = (MOUSE_UP, LEFT, event.Position)
-#     	q.put(isClicked)
-#     print 'Position:', event.Position
-#     print '---'
-#     return True
+def OnMouseEvent(event):
+	# global isClicked
+	# global q
+	# print 'MessageName:', event.MessageName
+	# print 'Message:', event.Message
+	# if event.Message == "mouse left down":
+	# 	isClicked = (MOUSE_DOWN, LEFT, event.Position)
+	# 	q.put(isClicked)
+	# elif event.Message == "mouse left up":
+	# 	isClicked = (MOUSE_UP, LEFT, event.Position)
+	# 	q.put(isClicked)
+	print 'Position:', event.Position
+	# print '---'
+	return True
 
-# def pyHookHandle():
-# 	hm = pyHook.HookManager()# create a hook manager
-# 	#hm.KeyDown = OnKeyboardEvent# watch for all key events
-# 	hm.MouseAll = OnMouseEvent
-# 	#hm.HookKeyboard()# set the hook
-# 	hm.HookMouse()
-# 	pythoncom.PumpMessages()# wait forever
+def pyHookHandle():
+	hm = pyHook.HookManager()# create a hook manager
+	#hm.KeyDown = OnKeyboardEvent# watch for all key events
+	hm.MouseAll = OnMouseEvent
+	#hm.HookKeyboard()# set the hook
+	hm.HookMouse()
+	pythoncom.PumpMessages()# wait forever
 
 IP = '10.20.170.115'
 IP = '127.0.0.1'
@@ -61,18 +62,14 @@ pic.setGeometry(0, 0, width - 1, height - 1)
 
 window.show()
 
-def foo():
+def foo(pic):
 	data = ''
 	temp = ''
-	c = 0
 	s.send('go')
 	sizeToRec = 65535
 	while ')' not in temp:
 		temp = s.recv(sizeToRec)
 		data += temp
-		#print len(data), c
-		#data += temp
-		c += 1
 	data = data[1:]
 	data = data[:len(data) - 1]
 	try:
@@ -89,8 +86,17 @@ def foo():
 
 	pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
 
-timer = QtCore.QTimer()
-timer.timeout.connect(foo)
-timer.start(0)
+def temp():
+	timer = QtCore.QTimer()
+	timer.timeout.connect(foo)
+	timer.start(0)
 
-exit(app.exec_())
+	exit(app.exec_())
+
+thread.start_new_thread( temp, () )
+pyHookHandle()
+# timer = QtCore.QTimer()
+# timer.timeout.connect(foo)
+# timer.start(0)
+
+# exit(app.exec_())

@@ -43,10 +43,10 @@ def OnKeyboardEvent(event):
 
 def pyHookHandle():
 	hm = pyHook.HookManager()# create a hook manager
-	hm.KeyDown = OnKeyboardEvent# watch for all key events
-	# hm.MouseAll = OnMouseEvent
-	hm.HookKeyboard()# set the hook
-	# hm.HookMouse()
+	# hm.KeyDown = OnKeyboardEvent# watch for all key events
+	hm.MouseAll = OnMouseEvent
+	# hm.HookKeyboard()# set the hook
+	hm.HookMouse()
 	pythoncom.PumpMessages()# wait forever
 
 pyHookHandle()
