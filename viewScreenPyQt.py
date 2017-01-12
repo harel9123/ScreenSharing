@@ -9,7 +9,6 @@ from os import getcwd
 import pythoncom, pyHook
 import Queue
 
-# q = Queue()
 moved = False
 isClicked = (0, 0, 0)
 MOUSE_DOWN = 1
