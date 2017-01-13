@@ -39,7 +39,9 @@ def pyHookHandle():
 	hm.MouseAll = OnMouseEvent
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
-	pythoncom.PumpMessages()# wait forever
+	while True:
+		pythoncom.PumpWaitingMessages()
+	# pythoncom.PumpMessages()# wait forever
 
 IP = '10.20.170.115'
 IP = '127.0.0.1'
@@ -62,7 +64,7 @@ pic.setGeometry(0, 0, width - 1, height - 1)
 
 window.show()
 
-def foo(pic):
+def foo():
 	data = ''
 	temp = ''
 	s.send('go')
@@ -86,17 +88,10 @@ def foo(pic):
 
 	pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
 
-def temp():
-	timer = QtCore.QTimer()
-	timer.timeout.connect(foo)
-	timer.start(0)
+thread.start_new_thread( pyHookHandle, () )
 
-	exit(app.exec_())
+timer = QtCore.QTimer()
+timer.timeout.connect(foo)
+timer.start(0)
 
-thread.start_new_thread( temp, () )
-pyHookHandle()
-# timer = QtCore.QTimer()
-# timer.timeout.connect(foo)
-# timer.start(0)
-
-# exit(app.exec_())
+exit(app.exec_())
