@@ -8,7 +8,6 @@ from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
 import Queue
-import threading
 from multiprocessing import Process
 
 moved = False
@@ -23,14 +22,14 @@ def OnMouseEvent(event):
 	# global isClicked
 	# global q
 	# print 'MessageName:', event.MessageName
-	# print 'Message:', event.Message
+	print 'Message:', event.Message
 	# if event.Message == "mouse left down":
 	# 	isClicked = (MOUSE_DOWN, LEFT, event.Position)
 	# 	q.put(isClicked)
 	# elif event.Message == "mouse left up":
 	# 	isClicked = (MOUSE_UP, LEFT, event.Position)
 	# 	q.put(isClicked)
-	print 'Position:', event.Position
+	#print 'Position:', event.Position
 	# print '---'
 	return True
 
@@ -47,9 +46,9 @@ IP = '10.20.170.30'
 IP = '127.0.0.1'
 PORT = 8888
 
-class W(QtGui.QMainWindow):
+class StreamScreen(QtGui.QMainWindow):
 	def __init__(self, ):
-		super(W, self).__init__()
+		super(StreamScreen, self).__init__()
 		width = win32api.GetSystemMetrics(0)
 		height = win32api.GetSystemMetrics(1)
 		self.setGeometry(30, 30, width - 1, height - 1)
@@ -94,7 +93,7 @@ if __name__ == '__main__':
 	s.connect( ( IP , PORT ) )
 
 	app = QtGui.QApplication(argv)
-	gui = W()
+	gui = StreamScreen()
 
 	p = Process(target = pyHookHandle, args = ())
 	p.start()
