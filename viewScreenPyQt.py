@@ -8,7 +8,8 @@ from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
 import Queue
-import thread
+import threading
+from multiprocessing import Process
 
 moved = False
 isClicked = (0, 0, 0)
@@ -34,63 +35,69 @@ def OnMouseEvent(event):
 	return True
 
 def pyHookHandle():
+	print "IN PROCESS"
 	hm = pyHook.HookManager()# create a hook manager
 	#hm.KeyDown = OnKeyboardEvent# watch for all key events
 	hm.MouseAll = OnMouseEvent
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
-	while True:
-		pythoncom.PumpMessages()# wait forever
+	pythoncom.PumpMessages()
 
-IP = '10.20.170.115'
+IP = '10.20.170.30'
 IP = '127.0.0.1'
 PORT = 8888
 
-s = socket.socket()
-s.connect( ( IP , PORT ) )
+class W(QtGui.QMainWindow):
+	def __init__(self, ):
+		super(W, self).__init__()
+		width = win32api.GetSystemMetrics(0)
+		height = win32api.GetSystemMetrics(1)
+		self.setGeometry(30, 30, width - 1, height - 1)
+		self.pic = QtGui.QLabel(self)
+		self.pic.setGeometry(0, 0, width - 1, height - 1)
 
-width = win32api.GetSystemMetrics(0)
-height = win32api.GetSystemMetrics(1)
+		self.show()
 
-app = QtGui.QApplication(argv)
-window = QtGui.QMainWindow()
-window.setGeometry(30, 30, width - 1, height - 1)
+	def foo(self, ):
+		data = ''
+		temp = 'empty'
+		s.send('go')
+		sizeToRec = 65535
+		while temp[-1] != ')':
+			temp = s.recv(sizeToRec)
+			data += temp
+		data = data[1:]
+		data = data[:len(data) - 1]
+		try:
+			data = base64.b64decode(data)
+		except:
+			s.send('fail')
+			return
+		finally:
+			coords = win32api.GetCursorPos()
+			s.send('ok' + str(coords))
+		p = open('p.png', 'wb')
+		p.write(data)
+		p.close()
 
-counter = 0
+		self.pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
 
-pic = QtGui.QLabel(window)
-pic.setGeometry(0, 0, width - 1, height - 1)
+	def run(self, ):
+		timer = QtCore.QTimer()
+		timer.timeout.connect(self.foo)
+		timer.start(0)
 
-window.show()
+		exit(app.exec_())
 
-def foo():
-	data = ''
-	temp = ''
-	s.send('go')
-	sizeToRec = 65535
-	while temp[-1] != ')':
-		temp = s.recv(sizeToRec)
-		data += temp
-	data = data[1:]
-	data = data[:len(data) - 1]
-	try:
-		data = base64.b64decode(data)
-	except:
-		s.send('fail')
-		return
-	finally:
-		coords = win32api.GetCursorPos()
-		s.send('ok' + str(coords))
-	p = open('p.png', 'wb')
-	p.write(data)
-	p.close()
+if __name__ == '__main__':
+	s = socket.socket()
+	s.connect( ( IP , PORT ) )
 
-	pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
+	app = QtGui.QApplication(argv)
+	gui = W()
 
-thread.start_new_thread( pyHookHandle, () )
+	p = Process(target = pyHookHandle, args = ())
+	p.start()
 
-timer = QtCore.QTimer()
-timer.timeout.connect(foo)
-timer.start(0)
-
-exit(app.exec_())
+	gui.run()
+	p.join()
