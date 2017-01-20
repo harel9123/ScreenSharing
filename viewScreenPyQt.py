@@ -39,7 +39,8 @@ def pyHookHandle():
 	hm.MouseAll = OnMouseEvent
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
-	pythoncom.PumpMessages()# wait forever
+	while True:
+		pythoncom.PumpMessages()# wait forever
 
 IP = '10.20.170.115'
 IP = '127.0.0.1'
@@ -67,7 +68,7 @@ def foo():
 	temp = ''
 	s.send('go')
 	sizeToRec = 65535
-	while ')' not in temp:
+	while temp[-1] != ')':
 		temp = s.recv(sizeToRec)
 		data += temp
 	data = data[1:]
