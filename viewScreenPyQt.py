@@ -39,9 +39,7 @@ def pyHookHandle():
 	hm.MouseAll = OnMouseEvent
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
-	while True:
-		pythoncom.PumpWaitingMessages()
-	# pythoncom.PumpMessages()# wait forever
+	pythoncom.PumpMessages()# wait forever
 
 IP = '10.20.170.115'
 IP = '127.0.0.1'
