@@ -51,5 +51,7 @@ thread.start_new_thread(handle, ())
 
 while True:
 	data = con.recv(50)
-	con.send('k')
-	q.put(data)
+	relevant = data.split(']')[0] + ']'
+	data = data.split(']')
+	# con.send('k')
+	q.put(relevant)

@@ -2,18 +2,22 @@ import socket
 from multiprocessing import Process
 import pythoncom, pyHook
 
+IP = '10.0.0.10'
+IP = '127.0.0.1'
+
 s = socket.socket()
-s.connect(('127.0.0.1', 9595))
+s.connect((IP, 9595))
 
 def parseEvent(event):
-	msgName = str(event.Message)
 	pos = str(event.Position)
+	msgName = str(event.Message)
 	parsedVer = '[' + msgName + ', ' + pos + ']'
-	print parsedVer
 	s.send(parsedVer)
-	s.recv(1)
+	print parsedVer
+	# s.recv(1)
 
 def OnMouseEvent(event):
+	#print parsedVer
 	parseEvent(event)
 	return True
 
