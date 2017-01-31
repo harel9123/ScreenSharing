@@ -6,10 +6,11 @@ s = socket.socket()
 s.connect(('127.0.0.1', 9595))
 
 def parseEvent(event):
-	msgName = str(event.MessageName)
+	msgName = str(event.Message)
 	pos = str(event.Position)
-	prasedVer = '[' + msgName + ', ' + pos + ']'
-	s.send(prasedVer)
+	parsedVer = '[' + msgName + ', ' + pos + ']'
+	print parsedVer
+	s.send(parsedVer)
 	s.recv(1)
 
 def OnMouseEvent(event):
@@ -25,6 +26,11 @@ def pyHookHandle():
 	hm.HookMouse()
 	pythoncom.PumpMessages()
 
+def main():
+	pyHookHandle()
+	# p = Process(target = pyHookHandle, args = ())
+	# p.start()
+	# p.join()	
 
-p = Process(target = pyHookHandle, args = ())
-p.join()
+if __name__ == '__main__':
+	main()
