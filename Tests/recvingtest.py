@@ -40,7 +40,7 @@ def handle():
 			data = q.get()
 			print data
 			data = parse(data)
-			if data[0] == 513 || data[0] == 514:
+			if data[0] == 513 or data[0] == 514:
 				click(data[0], data[1])
 			elif data[0] == 512:
 				move(data[1])
