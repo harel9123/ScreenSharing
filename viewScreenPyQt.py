@@ -8,20 +8,21 @@ from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
 import Queue
-from multiprocessing import Process
+from multiprocessing import Process, Queue
+from constants import *
 
-moved = False
-isClicked = (0, 0, 0)
-MOUSE_DOWN = 1
-MOUSE_UP = 2
+events = []
 
-LEFT = 1
-RIGHT = 2
+def parseEvent(event):
+	msgName = str(event.MessageName)
+	pos = str(event.Position)
+	prasedVer = '[' + msgName + ', ' + pos + ']'
+	events.append(prasedVer)
 
 def OnMouseEvent(event):
 	# global isClicked
 	# global q
-	# print 'MessageName:', event.MessageName
+	print 'MessageName:', event.MessageName
 	print 'Message:', event.Message
 	# if event.Message == "mouse left down":
 	# 	isClicked = (MOUSE_DOWN, LEFT, event.Position)
@@ -59,14 +60,14 @@ class StreamScreen(QtGui.QMainWindow):
 
 	def foo(self, ):
 		data = ''
-		temp = 'empty'
+		temp = ' '
 		s.send('go')
 		sizeToRec = 65535
 		while temp[-1] != ')':
 			temp = s.recv(sizeToRec)
 			data += temp
 		data = data[1:]
-		data = data[:len(data) - 1]
+		data = data[:-1]
 		try:
 			data = base64.b64decode(data)
 		except:
@@ -95,6 +96,7 @@ if __name__ == '__main__':
 	app = QtGui.QApplication(argv)
 	gui = StreamScreen()
 
+	
 	p = Process(target = pyHookHandle, args = ())
 	p.start()
 
