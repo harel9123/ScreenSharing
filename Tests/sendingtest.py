@@ -3,7 +3,7 @@ from multiprocessing import Process
 import pythoncom, pyHook
 
 IP = '10.0.0.10'
-IP = '127.0.0.1'
+# IP = '127.0.0.1'
 
 s = socket.socket()
 s.connect((IP, 9595))
@@ -13,8 +13,8 @@ def parseEvent(event):
 	msgName = str(event.Message)
 	parsedVer = '[' + msgName + ', ' + pos + ']'
 	s.send(parsedVer)
-	print parsedVer
-	# s.recv(1)
+	# print parsedVer
+	s.recv(1)
 
 def OnMouseEvent(event):
 	#print parsedVer

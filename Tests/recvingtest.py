@@ -53,5 +53,5 @@ while True:
 	data = con.recv(50)
 	relevant = data.split(']')[0] + ']'
 	data = data.split(']')
-	# con.send('k')
+	con.send('k')
 	q.put(relevant)
