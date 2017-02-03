@@ -4,6 +4,16 @@ from cStringIO import StringIO
 from time import sleep
 import base64
 import win32api
+import thread
+from constants import *
+import Events
+import Queue
+
+IP = '0.0.0.0'
+streamPort = 8888
+dataPort = 8889
+
+q = Queue.Queue()
 
 def getEncodedScreen():
 	data = StringIO()
@@ -11,31 +21,67 @@ def getEncodedScreen():
 	img.save(data, 'png')
 	return base64.b64encode(data.getvalue())
 
-IP = '0.0.0.0'
-PORT = 8888
+def parseData(data):
+	data = data[1:-1]
+	data = data.split(', ')
+	code = int(data[0])
+	x = int(data[1][1:])
+	y = int(data[2][:-1])
+	pos = (x, y)
+	return (code, pos)
 
-s = socket.socket()
-s.bind( ( IP , PORT ) )
-s.listen(1)
-con, addr = s.accept()
+def handleEvents():
+	while True:
+		if not q.empty():
+			data = q.get()
+			data = parseData(data)
+			if data[0] == M_Move:
+				Events.move(data[1])
+			elif data[0] == M_LeftDown or data[0] == M_LeftUp:
+				Events.click(data[0], data[1])
+			elif data[0] == M_RightDown or data[0] == M_RightUp:
+				Events.click(data[0], data[1])
 
-while True:
-	data = getEncodedScreen()
-	approval = con.recv(2)
-	if approval != "go":
-		continue
-	data = '(' + data + ')'
-	con.send(data)
+def dataTransportation():
+	dataSocket = socket.socket()
+	dataSocket.bind( ( IP , dataPort ) )
+	dataSocket.listen(1)
+	dataCon, dataAddr = dataSocket.accept()
 
-	ack = con.recv(15)
-	if ack[:2] == 'ok':
-		ack = ack[2:]
-		ack = ack.split(',')
-		ack[0] = ack[0].strip('(')
-		ack[1] = ack[1].strip(')')
-		x = int(ack[0])
-		y = int(ack[1])
-		#win32api.SetCursorPos( ( x, y ) )
-		continue
+	thread.start_new_thread(handleEvents, ())
 
-con.close()
+	while True:
+		try:
+			data = dataCon.recv(1024)
+			q.put(data)
+			dataCon.send('.')
+		except:
+			return
+
+def main():
+	streamSocket = socket.socket()
+	streamSocket.bind( ( IP , streamPort ) )
+	streamSocket.listen(1)
+	strmCon, strmAddr = streamSocket.accept()
+
+	thread.start_new_thread(dataTransportation, ())
+
+	while True:
+		data = getEncodedScreen()
+		approval = strmCon.recv(2)
+		if approval != "go":
+			continue
+		data = '(' + data + ')'
+		strmCon.send(data)
+
+		ack = strmCon.recv(15)
+		if ack[:2] == 'ok':
+			# ack = ack[2:]
+			# ack = ack.split(',')
+			# ack[0] = ack[0].strip('(')
+			# ack[1] = ack[1].strip(')')
+			# x = int(ack[0])
+			# y = int(ack[1])
+			continue
+
+	strmCon.close()
