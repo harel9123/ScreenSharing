@@ -3,9 +3,8 @@ import socket
 from cStringIO import StringIO
 from time import sleep
 import base64
-import win32api
+import win32api, win32con
 import thread
-from constants import *
 import Events
 import Queue
 
@@ -34,13 +33,13 @@ def handleEvents():
 	while True:
 		if not q.empty():
 			data = q.get()
-			data = parseData(data)
-			if data[0] == M_Move:
-				Events.move(data[1])
-			elif data[0] == M_LeftDown or data[0] == M_LeftUp:
-				Events.click(data[0], data[1])
-			elif data[0] == M_RightDown or data[0] == M_RightUp:
-				Events.click(data[0], data[1])
+			code, pos = parseData(data)
+			# If mouse event then ->
+			Events.mouseEvents(code, pos)
+			# else
+			# keyboardEvents(data)
+			# else
+			# anyotherEvent ?
 
 def dataTransportation():
 	dataSocket = socket.socket()
@@ -58,7 +57,7 @@ def dataTransportation():
 		except:
 			return
 
-def main():
+def streamTransportation():
 	streamSocket = socket.socket()
 	streamSocket.bind( ( IP , streamPort ) )
 	streamSocket.listen(1)
@@ -76,12 +75,10 @@ def main():
 
 		ack = strmCon.recv(15)
 		if ack[:2] == 'ok':
-			# ack = ack[2:]
-			# ack = ack.split(',')
-			# ack[0] = ack[0].strip('(')
-			# ack[1] = ack[1].strip(')')
-			# x = int(ack[0])
-			# y = int(ack[1])
 			continue
-
+			
 	strmCon.close()
+
+def main():
+	streamTransportation()
+	
