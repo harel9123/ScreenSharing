@@ -1,5 +1,6 @@
 Events - High Priority:
-	[ - ] Click
+	[ + ] Click
+	[ - ] Combine click with gui
 	[ - ] Keyboard
 	[ - ] Double Click
 	[ - ] Mouse Scroll

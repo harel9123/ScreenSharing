@@ -20,18 +20,8 @@ def parseEvent(event):
 	events.append(prasedVer)
 
 def OnMouseEvent(event):
-	# global isClicked
-	# global q
 	print 'MessageName:', event.MessageName
 	print 'Message:', event.Message
-	# if event.Message == "mouse left down":
-	# 	isClicked = (MOUSE_DOWN, LEFT, event.Position)
-	# 	q.put(isClicked)
-	# elif event.Message == "mouse left up":
-	# 	isClicked = (MOUSE_UP, LEFT, event.Position)
-	# 	q.put(isClicked)
-	#print 'Position:', event.Position
-	# print '---'
 	return True
 
 def pyHookHandle():
@@ -42,6 +32,9 @@ def pyHookHandle():
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
 	pythoncom.PumpMessages()
+
+# TODO: Listen to another port on another thread
+# 		Add sendingtest.py to this file
 
 IP = '10.20.170.30'
 IP = '127.0.0.1'
@@ -66,8 +59,7 @@ class StreamScreen(QtGui.QMainWindow):
 		while temp[-1] != ')':
 			temp = s.recv(sizeToRec)
 			data += temp
-		data = data[1:]
-		data = data[:-1]
+		data = data[1:-1]
 		try:
 			data = base64.b64decode(data)
 		except:

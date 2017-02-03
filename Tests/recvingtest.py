@@ -11,8 +11,7 @@ con, addr = s.accept()
 q = Queue.Queue()
 
 def parse(data):
-	data = data[1:]
-	data = data[:-1]
+	data = data[1:-1]
 	data = data.split(', ')
 	code = int(data[0])
 	x = int(data[1][1:])
@@ -44,7 +43,6 @@ def handle():
 	while True:
 		if not q.empty():
 			data = q.get()
-			print data
 			data = parse(data)
 			if data[0] == 512:
 				move(data[1])
