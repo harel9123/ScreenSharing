@@ -7,10 +7,7 @@ import win32api, win32con
 import thread
 import Events
 import Queue
-
-IP = '0.0.0.0'
-streamPort = 8888
-dataPort = 8889
+from constants import *
 
 q = Queue.Queue()
 
@@ -43,7 +40,7 @@ def handleEvents():
 
 def dataTransportation():
 	dataSocket = socket.socket()
-	dataSocket.bind( ( IP , dataPort ) )
+	dataSocket.bind( ( listenIP , dataPort ) )
 	dataSocket.listen(1)
 	dataCon, dataAddr = dataSocket.accept()
 
@@ -59,7 +56,7 @@ def dataTransportation():
 
 def streamTransportation():
 	streamSocket = socket.socket()
-	streamSocket.bind( ( IP , streamPort ) )
+	streamSocket.bind( ( listenIP , streamPort ) )
 	streamSocket.listen(1)
 	strmCon, strmAddr = streamSocket.accept()
 
@@ -81,4 +78,3 @@ def streamTransportation():
 
 def main():
 	streamTransportation()
-	
