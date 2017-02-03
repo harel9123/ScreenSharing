@@ -8,7 +8,8 @@ from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
 import Queue
-from multiprocessing import Process, Queue
+import thread
+from multiprocessing import Process
 from constants import *
 
 events = []
@@ -38,15 +39,18 @@ def OnMouseEvent(event):
 	return True
 
 def dataTransportation():
-	connectionFailed = True
-	while connectionFailed:
+	connectionEstablished = False
+	while connectionEstablished:
 		try:
 			dataCon = socket.socket()
 			dataCon.connect( ( serverIP, dataPort ) )
 		except:
+			print 'Data Connection Failed (8889) !'
 			sleep(1)
 			continue
-		connectionFailed = False
+		connectionEstablished = True
+
+	print 'Data Connection Established (8889) !'
 
 	p = Process(target = pyHookHandle, args = ())
 	p.start()
@@ -55,6 +59,7 @@ def dataTransportation():
 		if not q.empty():
 			data = q.get()
 			dataCon.send(data)
+			print 'Data sent: ' + data
 			dataCon.recv(1)
 
 # TODO: Listen to another port on another thread
@@ -67,7 +72,7 @@ class StreamScreen(QtGui.QMainWindow):
 		self.initializeConnection()
 		self.show()
 
-	def setDimensions():
+	def setDimensions(self):
 		width = win32api.GetSystemMetrics(0)
 		height = win32api.GetSystemMetrics(1)
 		self.setGeometry(30, 30, width - 1, height - 1)
@@ -77,6 +82,7 @@ class StreamScreen(QtGui.QMainWindow):
 	def initializeConnection(self, ):
 		self.streamCon = socket.socket()
 		self.streamCon.connect( ( serverIP, streamPort ) )
+		print 'Stream Connection Established (8888) !'
 
 	def receiveScreen(self, ):
 		data = ''
@@ -89,6 +95,7 @@ class StreamScreen(QtGui.QMainWindow):
 		data = data[1:-1]
 		try:
 			data = base64.b64decode(data)
+			print 'Screen received !'
 		except:
 			self.streamCon.send('no')
 			return
@@ -99,16 +106,15 @@ class StreamScreen(QtGui.QMainWindow):
 		p.close()
 
 		self.pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
+		print 'Changed screen'
 
 	def run(self, ):
-		timer = QtCore.QTimer()
-		timer.timeout.connect(self.receiveScreen)
-		timer.start(0)
-
-		exit(app.exec_())
+		self.timer = QtCore.QTimer()
+		self.timer.timeout.connect(self.receiveScreen)
+		self.timer.start(0)
 
 def streamTransportation():
-
+	pass
 
 def main():
 	app = QtGui.QApplication(argv)
@@ -117,6 +123,7 @@ def main():
 	thread.start_new_thread(dataTransportation, ())
 
 	gui.run()
+	exit(app.exec_())
 
 if __name__ == '__main__':
 	main()

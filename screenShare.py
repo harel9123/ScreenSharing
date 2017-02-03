@@ -41,8 +41,11 @@ def handleEvents():
 def dataTransportation():
 	dataSocket = socket.socket()
 	dataSocket.bind( ( listenIP , dataPort ) )
+	print 'Data Socket Bound !'
 	dataSocket.listen(1)
+	print 'Data Socket Listening !'
 	dataCon, dataAddr = dataSocket.accept()
+	print 'Data Connection Established (8889) !'
 
 	thread.start_new_thread(handleEvents, ())
 
@@ -57,8 +60,11 @@ def dataTransportation():
 def streamTransportation():
 	streamSocket = socket.socket()
 	streamSocket.bind( ( listenIP , streamPort ) )
+	print 'Stream Socket Bound !'
 	streamSocket.listen(1)
+	print 'Stream Socket Listening !'
 	strmCon, strmAddr = streamSocket.accept()
+	print 'Stream Connection Established (8888) !'
 
 	thread.start_new_thread(dataTransportation, ())
 
@@ -78,3 +84,6 @@ def streamTransportation():
 
 def main():
 	streamTransportation()
+
+if __name__ == "__main__":
+	main()

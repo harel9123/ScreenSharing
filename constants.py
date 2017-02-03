@@ -10,6 +10,6 @@ M_MiddleDown = 519 # Middle mouse down code
 M_MiddleUp = 520 # Middle mouse up code
 
 listenIP = '0.0.0.0'
-serverIP = '127.0.0.1'
+serverIP = '10.0.0.5'
 streamPort = 8888
 dataPort = 8889
