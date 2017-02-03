@@ -18,10 +18,6 @@ def parse(data):
 	x = int(data[1][1:])
 	y = int(data[2][:-1])
 	pos = (x, y)
-	# pos = pos[1:]
-	# pos = pos[:-1]
-	# pos = pos.split(', ')
-	# pos = (int(pos[0]), int(pos[1]))
 	return (code, pos)
 
 def click(code, pos):
@@ -33,6 +29,14 @@ def click(code, pos):
 		win32api.SetCursorPos(pos)	
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, pos[0], pos[1], 0, 0)
 
+	elif code == 516:
+		win32api.SetCursorPos(pos)	
+		win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, pos[0], pos[1], 0, 0)
+
+	elif code == 517:
+		win32api.SetCursorPos(pos)	
+		win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, pos[0], pos[1], 0, 0)
+
 def move(pos):
 	win32api.SetCursorPos(pos)
 
@@ -42,10 +46,13 @@ def handle():
 			data = q.get()
 			print data
 			data = parse(data)
-			if data[0] == 513 or data[0] == 514:
-				click(data[0], data[1])
-			elif data[0] == 512:
+			if data[0] == 512:
 				move(data[1])
+			elif data[0] == 513 or data[0] == 514:
+				click(data[0], data[1])
+			elif data[0] == 516 or data[0] == 517:
+				click(data[0], data[1])
+			
 				
 thread.start_new_thread(handle, ())
 

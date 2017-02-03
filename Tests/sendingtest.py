@@ -3,11 +3,20 @@ from multiprocessing import Process
 import pythoncom, pyHook
 
 s = socket.socket()
-s.connect(('127.0.0.1', 9595))
+s.connect(('10.20.170.34', 9595))
+
+movesCounter = 0
 
 def parseEvent(event):
+	global movesCounter
 	msgName = str(event.Message)
 	pos = str(event.Position)
+	'''if msgName == '512':
+		movesCounter += 1
+		if movesCounter < 1:
+			return
+		else:
+			movesCounter = 0'''
 	parsedVer = '[' + msgName + ', ' + pos + ']'
 	print parsedVer
 	s.send(parsedVer)
