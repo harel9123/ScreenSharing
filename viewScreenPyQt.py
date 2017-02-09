@@ -7,22 +7,25 @@ from PyQt4 import QtCore
 from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
-import Queue
 import thread
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from constants import *
 
 events = []
 
-q = Queue.Queue()
+localQueue = Queue()
 
-def pyHookHandle():
+def pyHookHandle(mainQueue):
+	print 'pyHookHandle Process successfully created !'
 	hm = pyHook.HookManager()# create a hook manager
 	#hm.KeyDown = OnKeyboardEvent# watch for all key events
 	hm.MouseAll = OnMouseEvent
 	#hm.HookKeyboard()# set the hook
 	hm.HookMouse()
-	pythoncom.PumpMessages()
+	while True:
+		while not localQueue.empty():
+			mainQueue.put(localQueue.get())
+		pythoncom.PumpWaitingMessages()
 
 def parseEvent(event):
 	msgName = str(event.Message)
@@ -31,36 +34,40 @@ def parseEvent(event):
 	return parsedVer
 
 def addEvent(event):
+	global localQueue
 	parsedEvent = parseEvent(event)
-	q.put(parsedEvent)
+	localQueue.put(parsedEvent)
+
 
 def OnMouseEvent(event):
 	addEvent(event)
 	return True
 
 def dataTransportation():
+	mainQueue = Queue()
 	connectionEstablished = False
-	while connectionEstablished:
+	dataCon = None
+	while not connectionEstablished:
 		try:
 			dataCon = socket.socket()
 			dataCon.connect( ( serverIP, dataPort ) )
+			connectionEstablished = True
 		except:
 			print 'Data Connection Failed (8889) !'
 			sleep(1)
 			continue
-		connectionEstablished = True
 
 	print 'Data Connection Established (8889) !'
 
-	p = Process(target = pyHookHandle, args = ())
+	p = Process(target = pyHookHandle, args = (mainQueue, ))
 	p.start()
 
 	while True:
-		if not q.empty():
-			data = q.get()
-			dataCon.send(data)
-			print 'Data sent: ' + data
-			dataCon.recv(1)
+		data = mainQueue.get()
+		dataCon.send(data)
+		print data
+		dataCon.recv(1)
+	p.join()
 
 # TODO: Listen to another port on another thread
 # 		Add sendingtest.py to this file
@@ -95,7 +102,7 @@ class StreamScreen(QtGui.QMainWindow):
 		data = data[1:-1]
 		try:
 			data = base64.b64decode(data)
-			print 'Screen received !'
+			# print 'Screen received !'
 		except:
 			self.streamCon.send('no')
 			return
@@ -106,7 +113,7 @@ class StreamScreen(QtGui.QMainWindow):
 		p.close()
 
 		self.pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
-		print 'Changed screen'
+		# print 'Changed screen'
 
 	def run(self, ):
 		self.timer = QtCore.QTimer()
@@ -120,10 +127,15 @@ def main():
 	app = QtGui.QApplication(argv)
 	gui = StreamScreen()
 
-	thread.start_new_thread(dataTransportation, ())
+	# thread.start_new_thread(dataTransportation, ())
+
+	p = Process(target = dataTransportation, args = ())
+	p.start()
 
 	gui.run()
-	exit(app.exec_())
+	retVal = app.exec_()
+	p.join()
+	exit(retVal)
 
 if __name__ == '__main__':
 	main()
