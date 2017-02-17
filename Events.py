@@ -6,7 +6,8 @@ from time import sleep
 # preforming events on the controlled machine.
 
 def handleEvents(code, info):
-	if code == K_KeyDown:
+	print code, info
+	if code == K_KeyDown or code == K_KeySysDown:
 		keyboardEvents(code, info)
 	else:
 		mouseEvents(code, info)
@@ -49,7 +50,7 @@ def keyboardEvents(code, info):
 	KD(code, info)
 
 def KD(code, info):
-	info = hex(ord(info))
+	info = ord(info)
 	win32api.keybd_event(info, 0, 0, 0)
 	sleep(.05)
 	win32api.keybd_event(info, 0, win32con.KEYEVENTF_KEYUP, 0)

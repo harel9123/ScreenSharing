@@ -20,13 +20,16 @@ def getEncodedScreen():
 def parseData(data):
 	data = data[1:-1]
 	data = data.split(', ')
+	code = None
+	info = None
 	if len(data) == 3:
 		code = int(data[0])
 		x = int(data[1][1:])
 		y = int(data[2][:-1])
 		info = (x, y)
 	else:
-		info = data[1]
+		code = int(data[0])
+		info = str(data[1])
 	return (code, info)
 
 def handleEvents():
