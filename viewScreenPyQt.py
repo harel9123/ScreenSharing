@@ -28,7 +28,10 @@ def pyHookHandle(mainQueue):
 		pythoncom.PumpWaitingMessages()
 
 def parseEvent(event):
-	msgName = str(event.Message)
+	if event.Wheel != 0:
+		msgName = str(event.Message * event.Wheel)
+	else:
+		msgName = str(event.Message)
 	pos = str(event.Position)
 	parsedVer = '[' + msgName + ', ' + pos + ']'
 	return parsedVer
@@ -41,7 +44,8 @@ def addEvent(event):
 
 def OnMouseEvent(event):
 	print 'WindowName:', event.WindowName
-	addEvent(event)
+	if event.WindowName == 'python':
+		addEvent(event)
 	return True
 
 def dataTransportation():

@@ -14,6 +14,7 @@ RIGHT = 2
 
 def OnMouseEvent(event):
     # called when mouse events are received
+    print type(event.Message)
     print 'MessageName:',event.MessageName
     print 'Message:',event.Message
     print 'Time:',event.Time
