@@ -1,9 +1,9 @@
 Events - High Priority:
 	[ + ] Click
 	[ + ] Double Click
-	[ - ] Combine click with gui
+	[ + ] Combine click with gui
+	[ + ] Mouse Scroll
 	[ - ] Keyboard
-	[ - ] Mouse Scroll
 
 Base Features - Medium Priority:
 	[ - ] GUI
