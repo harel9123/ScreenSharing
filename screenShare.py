@@ -59,6 +59,12 @@ def dataTransportation():
 		except:
 			return
 
+def getScreenSize():
+	width = win32api.GetSystemMetrics(0)
+	height = win32api.GetSystemMetrics(1)
+	size = '(' + str(width) + ', ' + str(height) + ')'
+	return size
+
 def streamTransportation():
 	streamSocket = socket.socket()
 	streamSocket.bind( ( listenIP , streamPort ) )
@@ -67,6 +73,8 @@ def streamTransportation():
 	print 'Stream Socket Listening !'
 	strmCon, strmAddr = streamSocket.accept()
 	print 'Stream Connection Established (8888) !'
+
+	strmCon.send(getScreenSize())
 
 	thread.start_new_thread(dataTransportation, ())
 
