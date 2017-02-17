@@ -2,8 +2,7 @@ import socket
 import base64
 import win32api
 from time import sleep
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt4 import QtGui, QtCore
 from sys import argv, exit
 from os import getcwd
 import pythoncom, pyHook
@@ -49,8 +48,8 @@ def addEvent(event, code):
 
 
 def OnMouseEvent(event):
-	# if event.WindowName == 'python':
-		# addEvent(event, 0)
+	if event.WindowName == 'python':
+		addEvent(event, 0)
 	return True
 
 def OnKeyboardEvent(event):
@@ -86,8 +85,8 @@ def dataTransportation():
 class StreamScreen(QtGui.QMainWindow):
 	def __init__(self, ):
 		super(StreamScreen, self).__init__()
-		self.setDimensions()
 		self.initializeConnection()
+		self.setDimensions()
 		self.showFullScreen()
 
 	def setDimensions(self, ):
@@ -95,12 +94,18 @@ class StreamScreen(QtGui.QMainWindow):
 		height = win32api.GetSystemMetrics(1)
 		self.setGeometry(0, 0, width - 1, height - 1)
 		self.pic = QtGui.QLabel(self)
-		self.pic.setGeometry(0, 0, width - 1, height - 1)
+		startingWidth = abs(width - self.width) / 2
+		startingHeight = abs(height - self.height) / 2
+		self.pic.setGeometry(startingWidth, startingHeight, self.width - 1, self.height - 1)
 
 	def initializeConnection(self, ):
 		self.streamCon = socket.socket()
 		self.streamCon.connect( ( serverIP, streamPort ) )
 		print 'Stream Connection Established (8888) !'
+		firstConData = self.streamCon.recv(50)
+		firstConData = firstConData.split(', ')
+		self.width = int(firstConData[0][1:])
+		self.height = int(firstConData[1][:-1])
 
 	def receiveScreen(self, ):
 		data = ''
@@ -120,6 +125,7 @@ class StreamScreen(QtGui.QMainWindow):
 			self.streamCon.send('ok')
 
 		pixmap = QtGui.QPixmap()
+		pixmap.fill(QtCore.Qt.black)
 		success = pixmap.loadFromData(data, format = "PNG")
 
 		if success:

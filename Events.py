@@ -6,7 +6,6 @@ from time import sleep
 # preforming events on the controlled machine.
 
 def handleEvents(code, info):
-	print code, info
 	if code == K_KeyDown or code == K_KeySysDown:
 		keyboardEvents(code, info)
 	else:
