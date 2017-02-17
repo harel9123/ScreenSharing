@@ -14,8 +14,9 @@ M_WheelDown = -1 # Mouse wheel down code
 M_WheelUp = 1 # Mouse wheel up code
 
 K_KeyDown = 256 # Keyboard key down code
+K_KeySysDown = 260 # Keyboard key down code
 
 listenIP = '0.0.0.0'
-serverIP = '127.0.0.1'
+serverIP = '10.0.0.7'
 streamPort = 8888
 dataPort = 8889

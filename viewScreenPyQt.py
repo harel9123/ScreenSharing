@@ -28,9 +28,10 @@ def pyHookHandle(mainQueue):
 		pythoncom.PumpWaitingMessages()
 
 def parseEvent(event, code):
+	parsedVer = ''
 	if code:
 		msgName = str(event.Message)
-		info = str(event.KeyID)
+		info = str(chr(event.KeyID))
 		parsedVer = '[' + msgName + ', ' + info + ']'
 	else:
 		if event.Wheel != 0:
