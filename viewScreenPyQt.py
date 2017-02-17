@@ -43,7 +43,6 @@ def addEvent(event):
 
 
 def OnMouseEvent(event):
-	print 'WindowName:', event.WindowName
 	if event.WindowName == 'python':
 		addEvent(event)
 	return True
@@ -73,9 +72,6 @@ def dataTransportation():
 		dataCon.recv(1)
 	p.join()
 
-# TODO: Listen to another port on another thread
-# 		Add sendingtest.py to this file
-
 class StreamScreen(QtGui.QMainWindow):
 	def __init__(self, ):
 		super(StreamScreen, self).__init__()
@@ -83,7 +79,7 @@ class StreamScreen(QtGui.QMainWindow):
 		self.initializeConnection()
 		self.showFullScreen()
 
-	def setDimensions(self):
+	def setDimensions(self, ):
 		width = win32api.GetSystemMetrics(0)
 		height = win32api.GetSystemMetrics(1)
 		self.setGeometry(0, 0, width - 1, height - 1)
@@ -111,11 +107,12 @@ class StreamScreen(QtGui.QMainWindow):
 			return
 		finally:
 			self.streamCon.send('ok')
-		p = open('p.png', 'wb')
-		p.write(data)
-		p.close()
 
-		self.pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
+		pixmap = QtGui.QPixmap()
+		success = pixmap.loadFromData(data, format = "PNG")
+
+		if success:
+			self.pic.setPixmap(pixmap)
 
 	def run(self, ):
 		self.timer = QtCore.QTimer()
