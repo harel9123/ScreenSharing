@@ -14,7 +14,19 @@ events = []
 
 localQueue = Queue()
 
-def pyHookHandle(mainQueue):
+width = 0
+height = 0
+startingWidth = 0
+startingHeight = 0
+
+def setGlobalVars(dimensions):
+	global width, height, startingWidth, startingHeight
+	width = dimensions[0]
+	height = dimensions[1]
+	startingWidth = dimensions[2]
+	startingHeight = dimensions[3]
+
+def pyHookHandle(mainQueue, dimensions):
 	print 'pyHookHandle Process successfully created !'
 	hm = pyHook.HookManager() # create a hook manager
 	hm.KeyDown = OnKeyboardEvent # watch for all key events
@@ -37,7 +49,8 @@ def parseEvent(event, code):
 			msgName = str(event.Message * event.Wheel)
 		else:
 			msgName = str(event.Message)
-		pos = str(event.Position)
+		pos = (event.Position[0] - startingWidth, event.Position[1] - startingHeight)
+		pos = str(pos)
 		parsedVer = '[' + msgName + ', ' + pos + ']'
 	return parsedVer
 
@@ -46,10 +59,11 @@ def addEvent(event, code):
 	parsedEvent = parseEvent(event, code)
 	localQueue.put(parsedEvent)
 
-
 def OnMouseEvent(event):
-	if event.WindowName == 'python':
-		addEvent(event, 0)
+	pos = event.Position
+	if (pos[0] > startingWidth and pos[0] < width + startingWidth and pos[1] > startingHeight and pos[1] < height + startingHeight):
+		if event.WindowName == 'python':
+			addEvent(event, 0)
 	return True
 
 def OnKeyboardEvent(event):
@@ -57,7 +71,7 @@ def OnKeyboardEvent(event):
 		addEvent(event, 1)
 	return True
 
-def dataTransportation():
+def dataTransportation(dimensions):
 	mainQueue = Queue()
 	connectionEstablished = False
 	dataCon = None
@@ -73,7 +87,7 @@ def dataTransportation():
 
 	print 'Data Connection Established (8889) !'
 
-	p = Process(target = pyHookHandle, args = (mainQueue, ))
+	p = Process(target = pyHookHandle, args = (mainQueue, dimensions, ))
 	p.start()
 
 	while True:
@@ -83,7 +97,7 @@ def dataTransportation():
 	p.join()
 
 class StreamScreen(QtGui.QMainWindow):
-	def __init__(self, ):
+	def __init__(self, dimensions, ):
 		super(StreamScreen, self).__init__()
 		self.initializeConnection()
 		self.setDimensions()
@@ -97,6 +111,11 @@ class StreamScreen(QtGui.QMainWindow):
 		startingWidth = abs(width - self.width) / 2
 		startingHeight = abs(height - self.height) / 2
 		self.pic.setGeometry(startingWidth, startingHeight, self.width - 1, self.height - 1)
+
+		dimensions.append(self.width)
+		dimensions.append(self.height)
+		dimensions.append(self.startingWidth)
+		dimensions.append(self.startingHeight)
 
 	def initializeConnection(self, ):
 		self.streamCon = socket.socket()
@@ -141,11 +160,12 @@ def streamTransportation():
 
 def main():
 	app = QtGui.QApplication(argv)
-	gui = StreamScreen()
+	dimensions = []
+	gui = StreamScreen(dimensions)
 
 	# thread.start_new_thread(dataTransportation, ())
 
-	p = Process(target = dataTransportation, args = ())
+	p = Process(target = dataTransportation, args = (dimensions, ))
 	p.start()
 
 	gui.run()
