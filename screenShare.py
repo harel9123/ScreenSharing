@@ -20,23 +20,22 @@ def getEncodedScreen():
 def parseData(data):
 	data = data[1:-1]
 	data = data.split(', ')
-	code = int(data[0])
-	x = int(data[1][1:])
-	y = int(data[2][:-1])
-	pos = (x, y)
-	return (code, pos)
+	if len(data) == 3:
+		code = int(data[0])
+		x = int(data[1][1:])
+		y = int(data[2][:-1])
+		info = (x, y)
+	else:
+		info = data[1]
+	return (code, info)
 
 def handleEvents():
 	while True:
 		if not q.empty():
 			data = q.get()
-			code, pos = parseData(data)
-			# If mouse event then ->
-			Events.mouseEvents(code, pos)
-			# else
-			# keyboardEvents(data)
-			# else
-			# anyotherEvent ?
+			code, info = parseData(data)
+
+			Events.handleEvents(code, info)
 
 def dataTransportation():
 	dataSocket = socket.socket()

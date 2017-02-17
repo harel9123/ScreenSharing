@@ -17,34 +17,44 @@ localQueue = Queue()
 
 def pyHookHandle(mainQueue):
 	print 'pyHookHandle Process successfully created !'
-	hm = pyHook.HookManager()# create a hook manager
-	#hm.KeyDown = OnKeyboardEvent# watch for all key events
+	hm = pyHook.HookManager() # create a hook manager
+	hm.KeyDown = OnKeyboardEvent # watch for all key events
 	hm.MouseAll = OnMouseEvent
-	#hm.HookKeyboard()# set the hook
+	hm.HookKeyboard() # set the hook
 	hm.HookMouse()
 	while True:
 		while not localQueue.empty():
 			mainQueue.put(localQueue.get())
 		pythoncom.PumpWaitingMessages()
 
-def parseEvent(event):
-	if event.Wheel != 0:
-		msgName = str(event.Message * event.Wheel)
-	else:
+def parseEvent(event, code):
+	if code:
 		msgName = str(event.Message)
-	pos = str(event.Position)
-	parsedVer = '[' + msgName + ', ' + pos + ']'
+		info = str(event.KeyID)
+		parsedVer = '[' + msgName + ', ' + info + ']'
+	else:
+		if event.Wheel != 0:
+			msgName = str(event.Message * event.Wheel)
+		else:
+			msgName = str(event.Message)
+		pos = str(event.Position)
+		parsedVer = '[' + msgName + ', ' + pos + ']'
 	return parsedVer
 
-def addEvent(event):
+def addEvent(event, code):
 	global localQueue
-	parsedEvent = parseEvent(event)
+	parsedEvent = parseEvent(event, code)
 	localQueue.put(parsedEvent)
 
 
 def OnMouseEvent(event):
+	# if event.WindowName == 'python':
+		# addEvent(event, 0)
+	return True
+
+def OnKeyboardEvent(event):
 	if event.WindowName == 'python':
-		addEvent(event)
+		addEvent(event, 1)
 	return True
 
 def dataTransportation():
