@@ -13,6 +13,9 @@ def mouseEvents(code, pos):
 	elif code == M_RightDown or code == M_RightUp:
 		RM(code - M_RightDown + 1, pos)
 
+	elif code / 10 == M_Wheel:
+		MW(code % 10, pos)
+
 	# Add more mouse events in the future
 
 # Left mouse
@@ -28,6 +31,12 @@ def RM(code, pos):
 		win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, pos[0], pos[1], 0, 0)
 	else:
 		win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, pos[0], pos[1], 0, 0)
+
+def MW(code, pos):
+	if code == M_WheelUp:
+		win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, pos[0], pos[1], M_WheelUp, 0)
+	else:
+		win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, pos[0], pos[1], M_WheelDown, 0)
 
 # Change cursor position
 def move(pos):

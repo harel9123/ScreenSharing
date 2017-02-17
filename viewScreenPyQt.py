@@ -40,6 +40,7 @@ def addEvent(event):
 
 
 def OnMouseEvent(event):
+	print 'WindowName:', event.WindowName
 	addEvent(event)
 	return True
 
@@ -65,7 +66,6 @@ def dataTransportation():
 	while True:
 		data = mainQueue.get()
 		dataCon.send(data)
-		print data
 		dataCon.recv(1)
 	p.join()
 
@@ -77,12 +77,12 @@ class StreamScreen(QtGui.QMainWindow):
 		super(StreamScreen, self).__init__()
 		self.setDimensions()
 		self.initializeConnection()
-		self.show()
+		self.showFullScreen()
 
 	def setDimensions(self):
 		width = win32api.GetSystemMetrics(0)
 		height = win32api.GetSystemMetrics(1)
-		self.setGeometry(30, 30, width - 1, height - 1)
+		self.setGeometry(0, 0, width - 1, height - 1)
 		self.pic = QtGui.QLabel(self)
 		self.pic.setGeometry(0, 0, width - 1, height - 1)
 
@@ -102,7 +102,6 @@ class StreamScreen(QtGui.QMainWindow):
 		data = data[1:-1]
 		try:
 			data = base64.b64decode(data)
-			# print 'Screen received !'
 		except:
 			self.streamCon.send('no')
 			return
@@ -113,7 +112,6 @@ class StreamScreen(QtGui.QMainWindow):
 		p.close()
 
 		self.pic.setPixmap(QtGui.QPixmap(getcwd() + '/p.png'))
-		# print 'Changed screen'
 
 	def run(self, ):
 		self.timer = QtCore.QTimer()

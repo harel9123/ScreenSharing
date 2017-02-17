@@ -13,17 +13,15 @@ LEFT = 1
 RIGHT = 2
 
 def OnMouseEvent(event):
-    global isClicked
-    global q
-    print 'MessageName:', event.MessageName
-    print 'Message:', event.Message
-    if event.Message == "mouse left down":
-    	isClicked = (MOUSE_DOWN, LEFT, event.Position)
-    	q.put(isClicked)
-    elif event.Message == "mouse left up":
-    	isClicked = (MOUSE_UP, LEFT, event.Position)
-    	q.put(isClicked)
-    print 'Position:', event.Position
+    # called when mouse events are received
+    print 'MessageName:',event.MessageName
+    print 'Message:',event.Message
+    print 'Time:',event.Time
+    print 'Window:',event.Window
+    print 'WindowName:',event.WindowName
+    print 'Position:',event.Position
+    print 'Wheel:',event.Wheel
+    print 'Injected:',event.Injected
     print '---'
     return True
 
@@ -32,21 +30,21 @@ def OnKeyboardEvent(event):
     print 'Message:',event.Message
     print 'Window:',event.Window
     print 'WindowName:',event.WindowName
-    print 'Ascii:', event.Ascii, chr(event.Ascii)
+    print 'Ascii:', event.Ascii
     print 'Key:', event.Key
     print 'KeyID:', event.KeyID
-    # print 'ScanCode:', event.ScanCode
-    # print 'Extended:', event.Extended
-    # print 'Injected:', event.Injected
+    print 'ScanCode:', event.ScanCode
+    print 'Extended:', event.Extended
+    print 'Injected:', event.Injected
     print 'Alt', event.Alt
-    # print 'Transition', event.Transition
+    print 'Transition', event.Transition
     print '---'
 
 def pyHookHandle():
 	hm = pyHook.HookManager()# create a hook manager
-	# hm.KeyDown = OnKeyboardEvent# watch for all key events
+	hm.KeyDown = OnKeyboardEvent# watch for all key events
 	hm.MouseAll = OnMouseEvent
-	# hm.HookKeyboard()# set the hook
+	hm.HookKeyboard()# set the hook
 	hm.HookMouse()
 	pythoncom.PumpMessages()# wait forever
 
