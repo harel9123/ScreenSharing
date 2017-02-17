@@ -61,6 +61,8 @@ def addEvent(event, code):
 
 def OnMouseEvent(event):
 	pos = event.Position
+	print "pos", pos
+	print width, height, startingWidth, startingHeight
 	if (pos[0] > startingWidth and pos[0] < width + startingWidth and pos[1] > startingHeight and pos[1] < height + startingHeight):
 		if event.WindowName == 'python':
 			addEvent(event, 0)
@@ -100,10 +102,10 @@ class StreamScreen(QtGui.QMainWindow):
 	def __init__(self, dimensions, ):
 		super(StreamScreen, self).__init__()
 		self.initializeConnection()
-		self.setDimensions()
+		self.setDimensions(dimensions)
 		self.showFullScreen()
 
-	def setDimensions(self, ):
+	def setDimensions(self, dimensions, ):
 		width = win32api.GetSystemMetrics(0)
 		height = win32api.GetSystemMetrics(1)
 		self.setGeometry(0, 0, width - 1, height - 1)
@@ -114,8 +116,8 @@ class StreamScreen(QtGui.QMainWindow):
 
 		dimensions.append(self.width)
 		dimensions.append(self.height)
-		dimensions.append(self.startingWidth)
-		dimensions.append(self.startingHeight)
+		dimensions.append(startingWidth)
+		dimensions.append(startingHeight)
 
 	def initializeConnection(self, ):
 		self.streamCon = socket.socket()
