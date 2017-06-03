@@ -8,9 +8,3 @@ Events - High Priority:
 Base Features - Medium Priority:
 	[ - ] GUI
 	[ - ] Keyboard multi buttons
-
-Misc - Low Priority:
-	[ - ] File transfer
-	[ - ] VoIP
-	[ - ] Audio
-	[ - ] UDP Connection

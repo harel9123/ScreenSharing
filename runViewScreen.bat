@@ -1,2 +1,0 @@
-python viewScreenPyQt.py
-pause

@@ -8,16 +8,27 @@ import thread
 import Events
 import Queue
 from constants import *
+import sys
 
 q = Queue.Queue()
 
 def getEncodedScreen():
+	'''
+		*This function captures the screen and encodes the data in base64.
+		*Input: None.
+		*Output: Encoded screenshot.
+	'''
 	data = StringIO()
 	img = ImageGrab.grab()
 	img.save(data, 'png')
 	return base64.b64encode(data.getvalue())
 
 def parseData(data):
+	'''
+		*This function parses the data according to the protocol.
+		*Input: data list.
+		*Output: tuple of the extracted data.
+	'''
 	data = data[1:-1]
 	data = data.split(', ')
 	code = None
@@ -33,6 +44,11 @@ def parseData(data):
 	return (code, info)
 
 def handleEvents():
+	'''
+		*This function reads events data from a queue.
+		*Input: None.
+		*Output: None.
+	'''
 	while True:
 		if not q.empty():
 			data = q.get()
@@ -41,6 +57,11 @@ def handleEvents():
 			Events.handleEvents(code, info)
 
 def dataTransportation():
+	'''
+		*This function controls the transportation of the events data of the connection.
+		*Input: None.
+		*Output: None.
+	'''
 	dataSocket = socket.socket()
 	dataSocket.bind( ( listenIP , dataPort ) )
 	print 'Data Socket Bound !'
@@ -60,12 +81,22 @@ def dataTransportation():
 			return
 
 def getScreenSize():
+	'''
+		*This function creates a string-like tuple of the screen metrics.
+		*Input: None.
+		*Output: Tuple of the screen metrics.
+	'''
 	width = win32api.GetSystemMetrics(0)
 	height = win32api.GetSystemMetrics(1)
 	size = '(' + str(width) + ', ' + str(height) + ')'
 	return size
 
 def streamTransportation():
+	'''
+		*This function controls the transportation of the screen stream of the connection.
+		*Input: None.
+		*Output: None.
+	'''
 	streamSocket = socket.socket()
 	streamSocket.bind( ( listenIP , streamPort ) )
 	print 'Stream Socket Bound !'

@@ -1,2 +1,0 @@
-python screenShare.py
-pause
