@@ -1,0 +1,1 @@
+Run the 'run.bat' file and install the right pyqt4 version, according to your python version(32bit/64bit).
