@@ -10,7 +10,7 @@
 	function clickEvent(name)
 	{
 		var code = document.getElementById(name).value;
-		data = httpGet("http://127.0.0.1/validate.php?name=" + name + "&code=" + code);
+		data = httpGet("http://" + window.location.hostname + "/validate.php?name=" + name + "&code=" + code);
 		alert(data);
 		if (data.includes("true") == true)
 		{
@@ -21,8 +21,8 @@
 
 	function startView(name)
 	{
-		IP = httpGet("http://127.0.0.1/getIP.php?name=" + name);
-		data = httpGet("http://127.0.0.1/checkLists.php?name=" + name + "&list=ready");
+		IP = httpGet("http://" + window.location.hostname + "/getIP.php?name=" + name);
+		data = httpGet("http://" + window.location.hostname + "/checkLists.php?name=" + name + "&list=ready");
 
 		if (data == "false")
 		{
@@ -32,16 +32,16 @@
 		{
 			if (IP != '')
 			{
-				httpGet("http://127.0.0.1/updateDB.php?name=" + name + "&mode=1");
-				alert("Run viewScreen.py with the argument: " + IP);
+				httpGet("http://" + window.location.hostname + "/updateDB.php?name=" + name + "&mode=1");
+				alert("Run sendHelp.py with the argument: " + IP);
 			}
 		}
 	}
 
 	function startShare(name)
 	{
-		IP = httpGet("http://127.0.0.1/getIP.php?name=" + name);
-		data = httpGet("http://127.0.0.1/checkLists.php?name=" + name + "&list=pending");
+		IP = httpGet("http://" + window.location.hostname + "/getIP.php?name=" + name);
+		data = httpGet("http://" + window.location.hostname + "/checkLists.php?name=" + name + "&list=pending");
 		
 		if (data == "false")
 		{
@@ -51,8 +51,8 @@
 		{
 			if (IP != '')
 			{
-				httpGet("http://127.0.0.1/updateDB.php?name=" + name + "&mode=0");
-				alert("Run screenShare.py with the argument: " + IP);
+				httpGet("http://" + window.location.hostname + "/updateDB.php?name=" + name + "&mode=0");
+				alert("Run getHelp.py !");
 			}
 		}
 	}
